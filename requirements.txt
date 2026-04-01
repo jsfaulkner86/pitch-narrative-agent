@@ -1,5 +1,5 @@
 # Core Agent Framework
-crewai>=0.80.0,<1.0.0
+crewai==0.114.0
 
 # LLM
 openai>=1.50.0,<2.0.0
