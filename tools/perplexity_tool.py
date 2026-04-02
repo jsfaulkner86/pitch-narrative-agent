@@ -1,7 +1,13 @@
 import os
 import httpx
+from crewai.tools import tool
 
+
+@tool("research_narrative")
 def research_narrative(query: str) -> str:
+    """Research investor language trends, objection responses, and pitch narrative strategies
+    using the Perplexity Sonar API. Use this for any research task related to fundraising
+    narratives, investor language, market sizing, or objection handling."""
     api_key = os.getenv("PERPLEXITY_API_KEY", "")
     if not api_key:
         return "Error: PERPLEXITY_API_KEY not set."
