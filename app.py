@@ -41,17 +41,8 @@ st.markdown(
 )
 
 # ── API key guard ───────────────────────────────────────────────────────────────
-OPENAI_KEY = os.getenv("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY", "")
 PERPLEXITY_KEY = os.getenv("PERPLEXITY_API_KEY") or st.secrets.get("PERPLEXITY_API_KEY", "")
 
-if not OPENAI_KEY:
-    st.error(
-        "**OPENAI_API_KEY not configured.** "
-        "Add it under App Settings → Secrets in Streamlit Cloud."
-    )
-    st.stop()
-
-os.environ["OPENAI_API_KEY"] = OPENAI_KEY
 if PERPLEXITY_KEY:
     os.environ["PERPLEXITY_API_KEY"] = PERPLEXITY_KEY
 
