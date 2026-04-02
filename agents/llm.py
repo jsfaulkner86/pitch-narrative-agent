@@ -1,13 +1,18 @@
 """Shared LLM instance for all CrewAI agents — Perplexity Sonar.
 
-Uses LiteLLM (bundled with crewai) with the perplexity/ provider prefix.
-No additional dependencies required beyond crewai.
+Fix: litellm.drop_params = True silently strips unsupported parameters
+(including CrewAI's injected stop=["\\nObservation"]) before the request
+reaches Perplexity, preventing the 400 unsupported_parameter error.
 
 Import in every agent:
     from agents.llm import perplexity_llm
 """
 import os
+import litellm
 from crewai import LLM
+
+# Strip any parameter Perplexity doesn't support (including CrewAI stop words)
+litellm.drop_params = True
 
 
 def get_perplexity_llm() -> LLM:
@@ -21,6 +26,7 @@ def get_perplexity_llm() -> LLM:
         model="perplexity/sonar",
         api_key=api_key,
         temperature=0.1,
+        stop=[],
     )
 
 
