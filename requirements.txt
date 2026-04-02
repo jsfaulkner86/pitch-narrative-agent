@@ -1,8 +1,8 @@
 # Core Agent Framework
 crewai>=0.95.0,<0.115.0
 
-# LLM
-openai>=1.50.0,<2.0.0
+# LLM — Perplexity via LangChain (used in app.py) and LiteLLM (used in agents)
+langchain-perplexity>=0.1.0
 
 # Integrations
 supabase>=2.4.0,<3.0.0
