@@ -10,7 +10,7 @@ import sys
 import streamlit as st
 from datetime import datetime
 
-# ── Page config ────────────────────────────────────────────────────────────────
+# ── Page config ───────────────────────────────────────────────────
 st.set_page_config(
     page_title="Pitch Narrative Agent · The Faulkner Group",
     page_icon="🎯",
@@ -18,29 +18,181 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# ── Minimal custom CSS ─────────────────────────────────────────────────────────
+# ── Brand CSS ───────────────────────────────────────────────────
+# Brand: Blue #6E93B0 (primary/actions/accents), Gold #D4AE48 (highlights/tags)
 st.markdown("""
 <style>
-  .block-container { padding-top: 2rem; max-width: 900px; }
-  .stForm { border: 1px solid #e5e3df; border-radius: 8px; padding: 1.5rem; background: #f9f8f5; }
-  .output-card { background: #fff; border: 1px solid #e5e3df; border-radius: 8px;
-                 padding: 1.5rem; margin-top: 1rem; }
-  .tag { display: inline-block; background: #cedcd8; color: #0f3638; font-size: 0.75rem;
-         padding: 2px 8px; border-radius: 999px; margin-right: 4px; }
+/* ─ Layout ──────────────────────────────────────────────── */
+[data-testid="stAppViewContainer"] {
+    background: #f4f3ef;
+}
+[data-testid="stHeader"] {
+    background: transparent;
+}
+.block-container {
+    padding-top: 2rem;
+    max-width: 900px;
+}
+
+/* ─ Form ──────────────────────────────────────────────────── */
+[data-testid="stForm"] {
+    background: #ffffff;
+    border: 1.5px solid #c8c5be;
+    border-radius: 10px;
+    padding: 1.5rem 1.75rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* ─ Input labels ─────────────────────────────────────────── */
+.stTextInput label,
+.stTextArea label,
+[data-baseweb="form-control-label"] {
+    color: #1a1916 !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    letter-spacing: 0.01em;
+}
+
+/* ─ Text inputs & textareas ───────────────────────────────── */
+.stTextInput input,
+.stTextArea textarea {
+    background: #fafaf8 !important;
+    border: 1.5px solid #b0ada6 !important;
+    border-radius: 6px !important;
+    color: #1a1916 !important;
+    font-size: 0.95rem !important;
+    padding: 0.5rem 0.75rem !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.stTextInput input:focus,
+.stTextArea textarea:focus {
+    border-color: #6E93B0 !important;
+    box-shadow: 0 0 0 3px rgba(110,147,176,0.18) !important;
+    outline: none !important;
+    background: #ffffff !important;
+}
+.stTextInput input::placeholder,
+.stTextArea textarea::placeholder {
+    color: #9c9890 !important;
+}
+
+/* ─ Primary button ─────────────────────────────────────────── */
+.stButton > button,
+[data-testid="stFormSubmitButton"] > button,
+[data-testid="stBaseButton-primary"] {
+    background: #6E93B0 !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 0.6rem 1.5rem !important;
+    border-radius: 6px !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    letter-spacing: 0.02em;
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+.stButton > button:hover,
+[data-testid="stFormSubmitButton"] > button:hover,
+[data-testid="stBaseButton-primary"]:hover {
+    background: #4e7799 !important;
+    box-shadow: 0 2px 8px rgba(110,147,176,0.30) !important;
+}
+
+/* ─ Download button ────────────────────────────────────────── */
+[data-testid="stDownloadButton"] > button {
+    background: transparent !important;
+    color: #6E93B0 !important;
+    border: 1.5px solid #6E93B0 !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    padding: 0.45rem 1.25rem !important;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+[data-testid="stDownloadButton"] > button:hover {
+    background: #6E93B0 !important;
+    color: #ffffff !important;
+}
+
+/* ─ Output card ───────────────────────────────────────────── */
+.output-card {
+    background: #ffffff;
+    border: 1.5px solid #c8c5be;
+    border-radius: 10px;
+    padding: 1.5rem 1.75rem;
+    margin-top: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    color: #1a1916;
+    line-height: 1.7;
+}
+
+/* ─ Tags ────────────────────────────────────────────────────── */
+.tag {
+    display: inline-block;
+    background: rgba(212,174,72,0.18);
+    color: #8a6a00;
+    border: 1px solid rgba(212,174,72,0.45);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 999px;
+    margin-right: 4px;
+    letter-spacing: 0.02em;
+}
+
+/* ─ Info / warning / success / error ─────────────────────────── */
+[data-testid="stInfo"] {
+    background: #eef3f7 !important;
+    border-left: 4px solid #6E93B0 !important;
+    color: #1a1916 !important;
+    border-radius: 6px !important;
+}
+[data-testid="stWarning"] {
+    background: #fdf3e3 !important;
+    border-left: 4px solid #c87d00 !important;
+    color: #1a1916 !important;
+    border-radius: 6px !important;
+}
+[data-testid="stSuccess"] {
+    background: #edf6ed !important;
+    border-left: 4px solid #2e7d32 !important;
+    color: #1a1916 !important;
+    border-radius: 6px !important;
+}
+[data-testid="stError"] {
+    background: #fdecea !important;
+    border-left: 4px solid #c62828 !important;
+    color: #1a1916 !important;
+    border-radius: 6px !important;
+}
+
+/* ─ Status box ────────────────────────────────────────────── */
+[data-testid="stStatusWidget"] {
+    border: 1.5px solid #c8c5be !important;
+    border-radius: 8px !important;
+    background: #ffffff !important;
+}
+
+/* ─ Typography ─────────────────────────────────────────── */
+h1, h2, h3, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
+    color: #1a1916 !important;
+    font-weight: 700;
+}
+.stMarkdown p, .stMarkdown li {
+    color: #2c2b28;
+}
 </style>
 """, unsafe_allow_html=True)
 
-# ── Header ─────────────────────────────────────────────────────────────────────
-st.markdown("## Pitch Narrative Agent")
+# ── Header ───────────────────────────────────────────────────
+st.markdown("## 🎯 Pitch Narrative Agent")
 st.markdown(
     """<p style='color:#7a7974; margin-top:-0.5rem; margin-bottom:1.5rem;'>
     AI-powered investor narrative briefings &nbsp;·&nbsp;
-    <a href='https://thefaulknergroupadvisors.com' target='_blank' style='color:#01696f;'>The Faulkner Group</a>
+    <a href='https://thefaulknergroupadvisors.com' target='_blank' style='color:#6E93B0; font-weight:600;'>The Faulkner Group</a>
     </p>""",
     unsafe_allow_html=True,
 )
 
-# ── API key guard ───────────────────────────────────────────────────────────────
+# ── API key guard ───────────────────────────────────────────────
 PERPLEXITY_KEY = os.getenv("PERPLEXITY_API_KEY") or st.secrets.get("PERPLEXITY_API_KEY", "")
 
 if not PERPLEXITY_KEY:
@@ -52,7 +204,7 @@ if not PERPLEXITY_KEY:
 
 os.environ["PERPLEXITY_API_KEY"] = PERPLEXITY_KEY
 
-# ── Imports (after env vars set) ───────────────────────────────────────────────
+# ── Imports (after env vars set) ─────────────────────────────────
 try:
     from crewai import Crew, Task
     from agents.market_language_agent import market_language_agent
@@ -63,7 +215,7 @@ except ImportError as e:
     st.error(f"Import error — check requirements.txt: {e}")
     st.stop()
 
-# ── Sample profile defaults ─────────────────────────────────────────────────────
+# ── Sample profile defaults ───────────────────────────────────────────
 DEFAULT_PROFILE = {
     "founder_name": "Dr. Sarah Chen",
     "indication": "Post-acute care coordination for complex Medicare populations",
@@ -82,7 +234,7 @@ DEFAULT_PROFILE = {
     ),
 }
 
-# ── Input form ─────────────────────────────────────────────────────────────────
+# ── Input form ───────────────────────────────────────────────────
 with st.form("narrative_form"):
     st.markdown("### Founder Profile")
     st.caption("Fill in a real or hypothetical profile. Pre-populated with a sample healthcare founder.")
@@ -112,7 +264,7 @@ with st.form("narrative_form"):
 
     submitted = st.form_submit_button("▶ Run Narrative Analysis", type="primary", use_container_width=True)
 
-# ── Agent run ──────────────────────────────────────────────────────────────────
+# ── Agent run ───────────────────────────────────────────────────
 if submitted:
     if not founder_name or not indication or not current_pitch:
         st.warning("Founder name, indication, and pitch summary are required.")
@@ -190,9 +342,15 @@ if submitted:
 
         status_box.update(label="Analysis complete", state="complete", expanded=False)
 
-        # ── Output rendering ───────────────────────────────────────────────────
+        # ── Output rendering ────────────────────────────────────────────────
         st.markdown("---")
-        st.markdown(f"### Narrative Briefing — {founder_name}")
+        st.markdown(
+            f"<div style='display:flex;align-items:center;gap:0.75rem;margin-bottom:0.25rem'>"
+            f"<h3 style='margin:0;color:#1a1916;'>Narrative Briefing</h3>"
+            f"<span class='tag'>{founder_name}</span>"
+            f"</div>",
+            unsafe_allow_html=True
+        )
         st.caption(f"Generated {period} · Demo mode (no delivery integrations active)")
 
         if result_str.strip().startswith("<"):
@@ -219,11 +377,11 @@ if submitted:
             import traceback
             st.code(traceback.format_exc())
 
-# ── Footer ──────────────────────────────────────────────────────────────────────
+# ── Footer ───────────────────────────────────────────────────
 st.markdown("---")
 st.markdown(
     "<p style='color:#bab9b4; font-size:0.8rem;'>Production pipeline runs bi-weekly via scheduled job. "
     "This demo does not write to Supabase, Notion, or send email. "
-    "<a href='https://github.com/jsfaulkner86/pitch-narrative-agent' target='_blank' style='color:#bab9b4;'>GitHub →</a></p>",
+    "<a href='https://github.com/jsfaulkner86/pitch-narrative-agent' target='_blank' style='color:#6E93B0;font-weight:600;'>GitHub →</a></p>",
     unsafe_allow_html=True,
 )
