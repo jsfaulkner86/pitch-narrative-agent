@@ -43,8 +43,14 @@ st.markdown(
 # ── API key guard ───────────────────────────────────────────────────────────────
 PERPLEXITY_KEY = os.getenv("PERPLEXITY_API_KEY") or st.secrets.get("PERPLEXITY_API_KEY", "")
 
-if PERPLEXITY_KEY:
-    os.environ["PERPLEXITY_API_KEY"] = PERPLEXITY_KEY
+if not PERPLEXITY_KEY:
+    st.error(
+        "**PERPLEXITY_API_KEY not configured.** "
+        "Add it under App Settings → Secrets in Streamlit Cloud."
+    )
+    st.stop()
+
+os.environ["PERPLEXITY_API_KEY"] = PERPLEXITY_KEY
 
 # ── Imports (after env vars set) ───────────────────────────────────────────────
 try:
@@ -176,7 +182,7 @@ if submitted:
         crew = Crew(
             agents=[market_language_agent, objection_agent, narrative_critique_agent, narrative_synthesizer],
             tasks=tasks,
-            verbose=False,  # suppress raw crew logs in Streamlit
+            verbose=False,
         )
 
         result = crew.kickoff()
@@ -189,7 +195,6 @@ if submitted:
         st.markdown(f"### Narrative Briefing — {founder_name}")
         st.caption(f"Generated {period} · Demo mode (no delivery integrations active)")
 
-        # Try to render as HTML if synthesizer returned HTML, else markdown
         if result_str.strip().startswith("<"):
             st.markdown(
                 f'<div class="output-card">{result_str}</div>',
@@ -199,7 +204,6 @@ if submitted:
             with st.container(border=True):
                 st.markdown(result_str)
 
-        # Download button
         st.download_button(
             label="⬇ Download Briefing (.txt)",
             data=result_str,
