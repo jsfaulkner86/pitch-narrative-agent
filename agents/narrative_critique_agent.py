@@ -1,4 +1,5 @@
 from crewai import Agent
+from agents.llm import perplexity_llm
 
 CRITIQUE_RUBRIC = """
 Evaluate the founder's current pitch summary against these dimensions:
@@ -14,8 +15,18 @@ For each dimension: score, 1-sentence critique, and 1-sentence improvement recom
 
 narrative_critique_agent = Agent(
     role="Pitch Narrative Critic & Coach",
-    goal="Evaluate the founder's current pitch narrative against a structured rubric. Identify the weakest narrative dimensions and provide specific, actionable language improvements.",
-    backstory="You are a pitch coach who has helped women's health companies raise over $500M combined. You are direct, specific, and always replace weak language with stronger alternatives rather than just flagging problems.",
-    tools=[], verbose=True, allow_delegation=False,
+    goal=(
+        "Evaluate the founder's current pitch narrative against a structured rubric. "
+        "Identify the weakest narrative dimensions and provide specific, actionable language improvements."
+    ),
+    backstory=(
+        "You are a pitch coach who has helped women's health companies raise over $500M combined. "
+        "You are direct, specific, and always replace weak language with stronger alternatives "
+        "rather than just flagging problems."
+    ),
+    tools=[],
+    llm=perplexity_llm,
+    verbose=True,
+    allow_delegation=False,
 )
 CRITIQUE_PROMPT = CRITIQUE_RUBRIC
